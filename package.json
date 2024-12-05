@@ -1,0 +1,27 @@
+{
+  "name": "college-management-backend",
+  "version": "1.0.0",
+  "description": "This is the backend for the college management software.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anubhavshavaran/college-management-backend.git"
+  },
+  "keywords": [
+    "college"
+  ],
+  "author": "Anubhav Shavaran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anubhavshavaran/college-management-backend/issues"
+  },
+  "homepage": "https://github.com/anubhavshavaran/college-management-backend#readme",
+  "dependencies": {
+    "express": "^4.21.1",
+    "mongodb": "^6.11.0"
+  }
+}
