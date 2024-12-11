@@ -2,8 +2,14 @@ import express from 'express';
 import AppError from "./utils/appError.js";
 import errorController from "./utils/ErrorController.js";
 import authRouter from "./routes/authRouter.js";
+import cors from 'cors';
 
 const app = express();
+app.use(cors({
+   origin: '*',
+   methods: ['GET', 'POST'],
+   credentials: true
+}));
 
 app.use(express.json());
 
