@@ -3,7 +3,6 @@ import AppError from "../utils/appError.js";
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 
-
 const signToken = id => {
     return jwt.sign({id: id}, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES
@@ -24,17 +23,18 @@ const createSendToken = (user, statusCode, res) => {
 }
 
 const signin = catchAsync(async (req, res, next) => {
-    const {username, password} = req.body;
+    const {username, password, organization, role} = req.body;
 
-    if (!username || !password) {
-        return next(new AppError('Please provide an email and password!', 401));
+    if (!username || !password || !organization || !role) {
+        return next(new AppError('Please provide a username, password, role and organization!', 401));
     }
 
     const user = await User.findOne({
-        username
+        username,
+        organization
     }).select('+password');
 
-    if (!user || !await user.comparePassword(password, user.password)) {
+    if (!user || !(await user.comparePassword(password, user.password))) {
         return next(new AppError('Invalid username or password', 401));
     }
 
@@ -42,11 +42,17 @@ const signin = catchAsync(async (req, res, next) => {
 });
 
 const signup = catchAsync(async (req, res, next) => {
-    const {username, role, password} = req.body;
+    const {username, role, password, organization} = req.body;
+
+    if (!username || !password || !role || !organization) {
+        return next(new AppError('Please provide the required fields!', 401));
+    }
+
     const newUser = await User.create({
         username,
         password,
-        role
+        role,
+        organization
     });
 
     createSendToken(newUser, 201, res);

@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+        unique: true,
     },
     password: {
         type: String,
@@ -16,6 +17,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['CHAIRMAN', 'ACCOUNTANT', 'ADMIN'],
         default: 'ACCOUNTANT',
+    },
+    organization: {
+        type: String,
+        enum: ['UNIVERSAL', 'SCHOOL', 'COLLEGE'],
+        default: 'UNIVERSAL',
     }
 });
 

@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
 
 app.all('*', (req, res, next) => {
    next(new AppError(`Can't find ${req.originalUrl} on the server.`, '404'));
