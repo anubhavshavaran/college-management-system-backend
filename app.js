@@ -8,7 +8,7 @@ import vouchersRouter from "./routes/vouchersRouter.js";
 const app = express();
 app.use(cors({
    origin: '*',
-   methods: ['GET', 'POST'],
+   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
    credentials: true
 }));
 
