@@ -5,6 +5,8 @@ import authRouter from "./routes/authRouter.js";
 import cors from 'cors';
 import vouchersRouter from "./routes/vouchersRouter.js";
 import studentsRouter from "./routes/studentsRouter.js";
+import dashRouter from "./routes/dashRouter.js";
+import feeRouter from "./routes/feeRouter.js";
 
 const app = express();
 app.use(cors({
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/vouchers', vouchersRouter);
 app.use('/api/students', studentsRouter);
+app.use('/api/dash', dashRouter);
+app.use('/api/fees', feeRouter);
 
 app.all('*', (req, res, next) => {
    next(new AppError(`Can't find ${req.originalUrl} on the server.`, '404'));

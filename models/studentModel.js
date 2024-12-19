@@ -7,7 +7,9 @@ const studentSchema = new mongoose.Schema({
         enum: ['UNIVERSAL', 'SCHOOL', 'COLLEGE'],
         required: true,
     },
+    rollNumber: String,
     class: Number, // Only for the school
+    section: Number, // Only for the school
     course: String, // Only for the college
     semester: { // Only for the college
         type: Number,
