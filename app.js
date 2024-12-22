@@ -8,6 +8,7 @@ import studentsRouter from "./routes/studentsRouter.js";
 import dashRouter from "./routes/dashRouter.js";
 import feeRouter from "./routes/feeRouter.js";
 import paymentRouter from "./routes/paymentRouter.js";
+import usersRouter from "./routes/usersRouter.js";
 
 const app = express();
 app.use(cors({
@@ -24,6 +25,7 @@ app.use('/api/students', studentsRouter);
 app.use('/api/dash', dashRouter);
 app.use('/api/fees', feeRouter);
 app.use('/api/payments', paymentRouter);
+app.use('/api/users', usersRouter);
 
 app.all('*', (req, res, next) => {
    next(new AppError(`Can't find ${req.originalUrl} on the server.`, '404'));
