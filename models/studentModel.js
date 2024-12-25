@@ -8,7 +8,7 @@ const studentSchema = new mongoose.Schema({
         required: true,
     },
     rollNumber: String,
-    class: Number, // Only for the school
+    class: String, // Only for the school
     section: Number, // Only for the school
     course: String, // Only for the college
     semester: { // Only for the college
@@ -27,7 +27,7 @@ const studentSchema = new mongoose.Schema({
     adhaarNumber: String,
     voterNumber: String,
     passportNumber: String,
-    admissionNUmber: String,
+    admissionNumber: String,
     dateOfAdmission: {
         type: Date,
     },
@@ -55,6 +55,18 @@ const studentSchema = new mongoose.Schema({
     inComeCertificateEnclosed: {
         type: String,
         enum: ["yes", "no"],
+    },
+    fixedFee: {
+        type: Number,
+        default: 0,
+    },
+    paidFee: {
+        type: Number,
+        default: 0,
+    },
+    previousFee: {
+        type: Number,
+        default: 0,
     }
 });
 

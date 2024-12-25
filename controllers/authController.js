@@ -23,7 +23,8 @@ const createSendToken = (user, statusCode, res) => {
 }
 
 const signin = catchAsync(async (req, res, next) => {
-    const {username, password, organization, role} = req.body;
+    let {username, password, organization, role} = req.body;
+    if (organization === "CHAIRMAN") organization = "UNIVERSAL";
 
     if (!username || !password || !organization || !role) {
         return next(new AppError('Please provide a username, password, role and organization!', 401));
@@ -31,7 +32,6 @@ const signin = catchAsync(async (req, res, next) => {
 
     const user = await User.findOne({
         username,
-        organization,
         role
     }).select('+password');
 

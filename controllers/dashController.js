@@ -1,21 +1,12 @@
 import catchAsync from "../utils/CatchAsync.js";
-import Fee from "../models/feeModel.js";
 import Student from "../models/studentModel.js";
 
 const getDashData = catchAsync(async (req, res) => {
-    const result = await Fee.aggregate([
-        {
-            $lookup: {
-                from: "students", localField: "studentId", foreignField: "_id", as: "studentData"
-            }
-        },
+    const result = await Student.aggregate([
         {
             $match: {
-                "studentData.organization": req.params.organization.toUpperCase()
+                "organization": req.params.organization.toUpperCase()
             }
-        },
-        {
-            $unwind: "$studentData"
         },
         {
             $group: {
@@ -27,6 +18,7 @@ const getDashData = catchAsync(async (req, res) => {
                 _id: 0, totalPaidFee: 1, totalFixedFee: 1
             }
         }]);
+    console.log(result)
     const studentsNum = await Student.countDocuments({
 
         organization: req.params.organization.toUpperCase(),

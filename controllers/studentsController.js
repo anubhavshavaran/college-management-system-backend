@@ -1,4 +1,4 @@
-import {createOne, deleteOne, getAll, getOne, updateOne} from "./handlerFactory.js";
+import {createOne, deleteOne, getOne, updateOne} from "./handlerFactory.js";
 import Student from "../models/studentModel.js";
 import catchAsync from "../utils/CatchAsync.js";
 
@@ -13,13 +13,26 @@ const getStudents = catchAsync(async (req, res) => {
         organization: req.params.organization.toUpperCase(),
     });
 
+    let males = 0, females = 0;
+    for (const student of students) {
+        switch (student.gender) {
+            case "male":
+                males++;
+                break;
+            case "female":
+                females++;
+                break;
+        }
+    }
+
     res.status(200).json({
         status: 'success',
         length: students.length,
         data: {
+            stats: {males, females},
             students
         }
-    })
+    });
 });
 
 export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents};
