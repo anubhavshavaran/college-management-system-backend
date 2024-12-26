@@ -4,7 +4,7 @@ const studentSchema = new mongoose.Schema({
     name: String,
     organization: {
         type: String,
-        enum: ['UNIVERSAL', 'SCHOOL', 'COLLEGE'],
+        enum: ['SCHOOL', 'COLLEGE'],
         required: true,
     },
     rollNumber: String,
