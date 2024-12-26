@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+import Student from "./studentModel.js";
 
 const paymentSchema = new mongoose.Schema({
     studentId: {
@@ -33,21 +34,45 @@ paymentSchema.pre("save", async function (next) {
 
 paymentSchema.post("save", async function (doc, next) {
     try {
-        const Student = mongoose.model("Student");
+        // Find the student by studentId
+        const student = await Student.findById(doc.studentId);
 
-        await Student.findByIdAndUpdate(
-            doc.studentId,
-            {
-                $inc: {
-                    paidFee: doc.amount,
+        if (!student) {
+            return next(new Error("Student not found"));
+        }
+
+        // If there is any previousFee, first deduct it from the payment
+        if (student.previousFee > 0) {
+            const remainingPreviousFee = student.previousFee - doc.amount;
+
+            if (remainingPreviousFee >= 0) {
+                // Update the previousFee
+                await Student.findByIdAndUpdate(doc.studentId, {
+                    $set: {
+                        previousFee: remainingPreviousFee,
+                    },
+                });
+            } else {
+                // If the previousFee is less than the amount, we clear previousFee and increment paidFee
+                await Student.findByIdAndUpdate(doc.studentId, {
+                    $set: {
+                        previousFee: 0,
+                        paidFee: student.paidFee + Math.abs(remainingPreviousFee), // Add the remaining to paidFee
+                    },
+                });
+            }
+        } else {
+            // If no previousFee, just increase paidFee
+            await Student.findByIdAndUpdate(doc.studentId, {
+                $set: {
+                    paidFee: student.paidFee + doc.amount,
                 },
-            },
-            { new: true }
-        );
+            });
+        }
 
         next();
-    } catch (err) {
-        next(err);
+    } catch (error) {
+        next(error);
     }
 });
 

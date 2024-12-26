@@ -1,6 +1,5 @@
 import catchAsync from "../utils/CatchAsync.js";
 import Payment from "../models/paymentModel.js";
-import {deleteOne} from "./handlerFactory.js";
 import AppError from "../utils/appError.js";
 import Student from "../models/studentModel.js";
 

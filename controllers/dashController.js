@@ -18,7 +18,6 @@ const getDashData = catchAsync(async (req, res) => {
                 _id: 0, totalPaidFee: 1, totalFixedFee: 1
             }
         }]);
-    console.log(result)
     const studentsNum = await Student.countDocuments({
 
         organization: req.params.organization.toUpperCase(),
