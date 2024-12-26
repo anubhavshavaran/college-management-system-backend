@@ -1,5 +1,8 @@
 import catchAsync from "../utils/CatchAsync.js";
 import Payment from "../models/paymentModel.js";
+import {deleteOne} from "./handlerFactory.js";
+import AppError from "../utils/appError.js";
+import Student from "../models/studentModel.js";
 
 const getPaymentsOfStudent = catchAsync(async (req, res) => {
     const payments = await Payment.find({
@@ -85,4 +88,26 @@ const getPaymentStats = catchAsync(async (req, res) => {
     });
 });
 
-export {getPaymentsOfStudent, createPayment, getPaymentStats};
+const deletePayment = catchAsync(async (req, res) => {
+    const doc = await Payment.findOneAndDelete({_id: req.params.id});
+
+    if (!doc) {
+        return next(new AppError("No document found with this ID", 404));
+    }
+
+    await Student.findByIdAndUpdate(
+        doc.studentId,
+        {
+            $inc: {
+                paidFee: -doc.amount
+            },
+        }
+    );
+
+    res.status(204).json({
+        status: "success",
+        data: null
+    });
+});
+
+export {getPaymentsOfStudent, createPayment, getPaymentStats, deletePayment};

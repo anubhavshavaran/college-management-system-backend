@@ -51,7 +51,7 @@ const updateOne = Model => catchAsync(async (req, res, next) => {
 });
 
 const deleteOne = Model => catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndDelete(req.params.id);
+    const doc = await Model.findOneAndDelete({_id: req.params.id});
 
     if (!doc) {
         return next(new AppError("No document found with this ID", 404));
@@ -61,6 +61,6 @@ const deleteOne = Model => catchAsync(async (req, res, next) => {
         status: "success",
         data: null
     });
-})
+});
 
 export {getOne, getAll, createOne, updateOne, deleteOne};
