@@ -7,8 +7,7 @@ const docsSchema = new mongoose.Schema({
     },
     uploadedAt: {
         type: Date,
-        default: Date.now(),
-        required: true,
+        default: Date.now()
     },
     path: {
         type: String

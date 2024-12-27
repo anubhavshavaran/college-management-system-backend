@@ -9,6 +9,7 @@ import dashRouter from "./routes/dashRouter.js";
 import paymentRouter from "./routes/paymentRouter.js";
 import usersRouter from "./routes/usersRouter.js";
 import docsRouter from "./routes/docsRouter.js";
+import path from "path";
 
 const app = express();
 app.use(cors({
@@ -18,6 +19,8 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+app.use('/docs', express.static(path.join('docs')));
 
 app.use('/api/auth', authRouter);
 app.use('/api/vouchers', vouchersRouter);
