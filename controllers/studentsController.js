@@ -35,4 +35,20 @@ const getStudents = catchAsync(async (req, res) => {
     });
 });
 
-export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents};
+const updateStudentsFee = catchAsync(async (req, res) => {
+    const {fixedFee} = req.body;
+    const {organization} = req.params;
+
+    await Student.updateMany({
+        organization: organization.toUpperCase(),
+        ...req.query
+    }, {
+        fixedFee: fixedFee
+    });
+
+    res.status(200).json({
+        status: 'success',
+    });
+});
+
+export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents, updateStudentsFee};

@@ -10,6 +10,7 @@ import paymentRouter from "./routes/paymentRouter.js";
 import usersRouter from "./routes/usersRouter.js";
 import docsRouter from "./routes/docsRouter.js";
 import path from "path";
+import feesRouter from "./routes/feesRouter.js";
 
 const app = express();
 app.use(cors({
@@ -25,6 +26,7 @@ app.use('/docs', express.static(path.join('docs')));
 app.use('/api/auth', authRouter);
 app.use('/api/vouchers', vouchersRouter);
 app.use('/api/students', studentsRouter);
+app.use('/api/fees', feesRouter);
 app.use('/api/dash', dashRouter);
 app.use('/api/payments', paymentRouter);
 app.use('/api/users', usersRouter);

@@ -41,8 +41,6 @@ const createDoc = catchAsync(async (req, res, next) => {
     }
 
     const fileName = file.originalname;
-    const filePath = req.file.path;
-    console.log(fileName, "///", filePath);
 
     const docs = await Docs.create({
         title,
