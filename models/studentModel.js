@@ -11,11 +11,13 @@ const studentSchema = new mongoose.Schema({
     class: String, // Only for the school
     section: Number, // Only for the school
     course: String, // Only for the college
-    year: { // Only for the college
+    durationInYear: {
         type: Number,
-        min: 1,
-        max: 4,
-        default: 1,
+        required: true,
+    }, // Only for the college
+    year: { // Only for the college
+        type: String,
+        required: true,
     },
     expectedYearOfPassing: String, // Only for the college
     mothersName: String,

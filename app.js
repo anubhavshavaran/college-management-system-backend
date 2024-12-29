@@ -11,6 +11,8 @@ import usersRouter from "./routes/usersRouter.js";
 import docsRouter from "./routes/docsRouter.js";
 import path from "path";
 import feesRouter from "./routes/feesRouter.js";
+import scheduleSchoolPromotionTask from "./schedules/schoolSchedule.js";
+import scheduleCollegePromotionTask from "./schedules/collegeSchedule.js";
 
 const app = express();
 app.use(cors({
@@ -31,6 +33,14 @@ app.use('/api/dash', dashRouter);
 app.use('/api/payments', paymentRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/docs', docsRouter);
+
+scheduleSchoolPromotionTask().then(_ => {
+   console.log("Schedule School Promotion Task");
+});
+
+scheduleCollegePromotionTask().then(_ => {
+   console.log("Schedule College Promotion Task");
+})
 
 app.all('*', (req, res, next) => {
    next(new AppError(`Can't find ${req.originalUrl} on the server.`, '404'));
