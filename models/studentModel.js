@@ -8,6 +8,8 @@ const studentSchema = new mongoose.Schema({
         required: true,
     },
     rollNumber: String,
+    satsNumber: String,
+    registrationNumber: String,
     class: String, // Only for the school
     section: Number, // Only for the school
     course: String, // Only for the college
@@ -29,7 +31,6 @@ const studentSchema = new mongoose.Schema({
     adhaarNumber: String,
     voterNumber: String,
     passportNumber: String,
-    admissionNumber: String,
     dateOfAdmission: {
         type: Date,
     },
