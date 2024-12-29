@@ -8,10 +8,17 @@ const updateStudent = updateOne(Student);
 const deleteStudent = deleteOne(Student);
 
 const getStudents = catchAsync(async (req, res) => {
-    const students = await Student.find({
-        ...req.query,
+    const { name, ...otherQueryParams } = req.query;
+    const query = {
+        ...otherQueryParams,
         organization: req.params.organization.toUpperCase(),
-    });
+    };
+
+    if (name) {
+        query.name = { $regex: name, $options: "i" };
+    }
+
+    const students = await Student.find(query);
 
     let males = 0, females = 0;
     for (const student of students) {
