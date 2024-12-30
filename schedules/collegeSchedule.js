@@ -10,6 +10,11 @@ async function promoteCollegeStudents() {
     for (const student of students) {
         if (student.year === "passedOut") continue;
 
+        const unpaidFees = student.fixedFee - student.paidFee;
+        if (unpaidFees > 0) {
+            student.previousFee += unpaidFees;
+        }
+
         const currentYear = parseInt(student.year, 10);
 
         if (!isNaN(currentYear) && currentYear < student.durationInYear) {
@@ -17,6 +22,8 @@ async function promoteCollegeStudents() {
         } else if (!isNaN(currentYear) && currentYear === student.durationInYear) {
             student.year = "passedOut";
         }
+
+        student.paidFee = 0;
 
         await student.save();
     }

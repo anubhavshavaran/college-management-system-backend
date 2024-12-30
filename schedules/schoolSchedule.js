@@ -10,6 +10,11 @@ async function promoteStudents() {
     for (const student of students) {
         if (student.class === "passedOut") continue;
 
+        const unpaidFees = student.fixedFee - student.paidFee;
+        if (unpaidFees > 0) {
+            student.previousFee += unpaidFees;
+        }
+
         if (student.class === "10") {
             student.class = "passedOut";
         } else if (student.class === "nursery") {
@@ -24,6 +29,8 @@ async function promoteStudents() {
                 student.class = String(nextClass);
             }
         }
+
+        student.paidFee = 0;
 
         await student.save();
     }
