@@ -58,4 +58,32 @@ const updateStudentsFee = catchAsync(async (req, res) => {
     });
 });
 
-export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents, updateStudentsFee};
+const searchStudents = catchAsync(async (req, res) => {
+    const {organization, searchQuery} = req.params;
+
+    const query = organization === 'college' ? [
+        {name: {$regex: searchQuery, $options: "i"}},
+        {registrationNumber: {$regex: searchQuery, $options: "i"}}
+    ] : [
+        {name: {$regex: searchQuery, $options: "i"}},
+        {satsNumber: {$regex: searchQuery, $options: "i"}}
+    ];
+
+    const students = await Student.find({
+        $and: [
+            {organization: organization.toUpperCase()},
+            {
+                $or: query
+            }
+        ]
+    });
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            students
+        }
+    });
+});
+
+export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents, updateStudentsFee, searchStudents};
