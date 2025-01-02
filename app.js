@@ -15,10 +15,22 @@ import scheduleSchoolPromotionTask from "./schedules/schoolSchedule.js";
 import scheduleCollegePromotionTask from "./schedules/collegeSchedule.js";
 
 const app = express();
+const allowedOrigins = [
+   'https://college-management-system-frontend-iv5bebul2.vercel.app',
+   'http://localhost:3000', // For local testing
+];
+
 app.use(cors({
-   origin: '*',
+   origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin || allowedOrigins.includes(origin)) {
+         callback(null, true);
+      } else {
+         callback(new Error('Not allowed by CORS'));
+      }
+   },
    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-   credentials: true
+   credentials: true, // Allow cookies and credentials
 }));
 
 app.use(express.json());
