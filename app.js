@@ -16,7 +16,7 @@ import scheduleCollegePromotionTask from "./schedules/collegeSchedule.js";
 
 const app = express();
 const allowedOrigins = [
-   'https://college-management-system-frontend-iv5bebul2.vercel.app',
+   'https://college-management-system-frontend-omega.vercel.app',
    'http://localhost:3000', // For local testing
 ];
 
