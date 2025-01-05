@@ -87,7 +87,7 @@ const getPaymentStats = catchAsync(async (req, res) => {
     });
 });
 
-const deletePayment = catchAsync(async (req, res) => {
+const deletePayment = catchAsync(async (req, res, next) => {
     const doc = await Payment.findOneAndDelete({_id: req.params.id});
 
     if (!doc) {
@@ -109,4 +109,19 @@ const deletePayment = catchAsync(async (req, res) => {
     });
 });
 
-export {getPaymentsOfStudent, createPayment, getPaymentStats, deletePayment};
+const getPayment = catchAsync(async (req, res, next) => {
+    const payment = await Payment.findById(req.params.id).populate('studentId');
+
+    if (!payment) {
+        return next(new AppError("No document found with this ID", 404));
+    }
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            payment,
+        },
+    });
+});
+
+export {getPaymentsOfStudent, createPayment, getPaymentStats, deletePayment, getPayment};

@@ -1,9 +1,17 @@
 import {Router} from "express";
-import {createPayment, deletePayment, getPaymentsOfStudent, getPaymentStats} from "../controllers/paymentController.js";
+import {
+    createPayment,
+    deletePayment,
+    getPayment,
+    getPaymentsOfStudent,
+    getPaymentStats
+} from "../controllers/paymentController.js";
 
 const router = Router();
 
 router.route("/stats/:organization/:year").get(getPaymentStats);
+
+router.route("/receipt/:id").get(getPayment);
 
 router.route("/:id")
     .get(getPaymentsOfStudent)
