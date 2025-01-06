@@ -27,42 +27,68 @@ const paymentSchema = new mongoose.Schema({
     }
 });
 
+function getFinancialYearStart(date = new Date()) {
+    const year = date.getMonth() < 3 ? date.getFullYear() - 1 : date.getFullYear();
+    return new Date(`${year}-04-01T00:00:00.000Z`);
+}
+
 paymentSchema.pre("save", async function (next) {
-    this.transactionId = `${new Date().getFullYear()}${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
-    next();
+    try {
+        const student = await mongoose.model("Student").findById(this.studentId);
+
+        if (!student) {
+            return next(new Error("Student not found"));
+        }
+
+        const financialYearStart = getFinancialYearStart();
+
+        const lastPayment = await mongoose
+            .model("Payment")
+            .findOne({
+                studentId: { $in: await mongoose.model("Student").distinct("_id", { organization: student.organization }) },
+                paidOn: { $gte: financialYearStart },
+            })
+            .sort({ paidOn: -1, _id: -1 });
+
+        if (lastPayment) {
+            const lastTransactionNumber = parseInt(lastPayment.transactionId, 10) || 0;
+            this.transactionId = lastTransactionNumber + 1;
+        } else {
+            this.transactionId = 1;
+        }
+
+        next();
+    } catch (error) {
+        next(error);
+    }
 });
 
 paymentSchema.post("save", async function (doc, next) {
     try {
-        // Find the student by studentId
         const student = await Student.findById(doc.studentId);
 
         if (!student) {
             return next(new Error("Student not found"));
         }
 
-        // If there is any previousFee, first deduct it from the payment
         if (student.previousFee > 0) {
             const remainingPreviousFee = student.previousFee - doc.amount;
 
             if (remainingPreviousFee >= 0) {
-                // Update the previousFee
                 await Student.findByIdAndUpdate(doc.studentId, {
                     $set: {
                         previousFee: remainingPreviousFee,
                     },
                 });
             } else {
-                // If the previousFee is less than the amount, we clear previousFee and increment paidFee
                 await Student.findByIdAndUpdate(doc.studentId, {
                     $set: {
                         previousFee: 0,
-                        paidFee: student.paidFee + Math.abs(remainingPreviousFee), // Add the remaining to paidFee
+                        paidFee: student.paidFee + Math.abs(remainingPreviousFee),
                     },
                 });
             }
         } else {
-            // If no previousFee, just increase paidFee
             await Student.findByIdAndUpdate(doc.studentId, {
                 $set: {
                     paidFee: student.paidFee + doc.amount,
