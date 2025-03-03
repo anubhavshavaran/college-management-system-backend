@@ -10,18 +10,16 @@ const studentSchema = new mongoose.Schema({
     rollNumber: String,
     satsNumber: String,
     registrationNumber: String,
-    class: String, // Only for the school
-    section: Number, // Only for the school
-    course: String, // Only for the college
+    class: String,
+    section: Number,
+    course: String,
     durationInYear: {
-        type: Number,
-        required: true,
-    }, // Only for the college
-    year: { // Only for the college
-        type: String,
-        required: true,
+        type: Number
     },
-    expectedYearOfPassing: String, // Only for the college
+    year: {
+        type: String
+    },
+    expectedYearOfPassing: String,
     mothersName: String,
     fathersName: String,
     phoneNumber: String,
