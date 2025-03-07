@@ -43,13 +43,14 @@ const signin = catchAsync(async (req, res, next) => {
 });
 
 const signup = catchAsync(async (req, res, next) => {
-    const {username, role, password, organization} = req.body;
+    const {username, role, password, organization, name} = req.body;
 
-    if (!username || !password || !role || !organization) {
+    if (!username || !password || !role || !organization || !name) {
         return next(new AppError('Please provide the required fields!', 401));
     }
 
     const newUser = await User.create({
+        name,
         username,
         password,
         role,
