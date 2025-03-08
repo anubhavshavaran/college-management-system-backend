@@ -32,7 +32,8 @@ const signin = catchAsync(async (req, res, next) => {
 
     const user = await User.findOne({
         username,
-        role
+        role,
+        organization
     }).select('+password');
 
     if (!user || !(await user.comparePassword(password, user.password))) {
