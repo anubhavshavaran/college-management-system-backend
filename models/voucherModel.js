@@ -39,13 +39,8 @@ const voucherSchema = new mongoose.Schema({
 voucherSchema.pre("save", async function (next) {
     const voucher = this;
 
-    const academicYear = await AcademicData.findOne({ organization: voucher.organization });
-    if (!academicYear) {
-        return next(new Error("Academic year data not found for the organization."));
-    }
-
-    const { startingDate } = academicYear;
-    const currentYear = startingDate.getFullYear();
+    const date = new Date();
+    const currentYear = date.getFullYear();
     const financialYearStart = new Date(`${currentYear}-04-01`);
     const financialYearEnd = new Date(`${currentYear + 1}-03-31`);
 
