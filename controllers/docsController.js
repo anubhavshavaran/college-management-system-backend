@@ -45,7 +45,7 @@ const createDoc = catchAsync(async (req, res, next) => {
     const docs = await Docs.create({
         title,
         organization: organization.toUpperCase(),
-        path: `/docs/${fileName}`,
+        path: `/uploads/${fileName}`,
     });
 
     res.status(201).json({
