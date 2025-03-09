@@ -39,10 +39,13 @@ const voucherSchema = new mongoose.Schema({
 voucherSchema.pre("save", async function (next) {
     const voucher = this;
 
-    const date = new Date();
-    const currentYear = date.getFullYear();
-    const financialYearStart = new Date(`${currentYear}-04-01`);
-    const financialYearEnd = new Date(`${currentYear + 1}-03-31`);
+    // Get the current date
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+
+    const financialYearStart = new Date(`${currentMonth >= 4 ? currentYear : currentYear - 1}-04-01`);
+    const financialYearEnd = new Date(`${currentMonth >= 4 ? currentYear + 1 : currentYear}-03-31`);
 
     const lastVoucher = await mongoose.model("Voucher").findOne({
         organization: voucher.organization,
@@ -57,6 +60,7 @@ voucherSchema.pre("save", async function (next) {
 
     next();
 });
+
 
 const Voucher = mongoose.model('Voucher', voucherSchema);
 export default Voucher;
