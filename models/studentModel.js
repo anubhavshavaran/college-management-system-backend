@@ -23,6 +23,7 @@ const studentSchema = new mongoose.Schema({
     mothersName: String,
     fathersName: String,
     phoneNumber: String,
+    phoneNumber2: String,
     dateOfBirth: {
         type: Date,
     },
