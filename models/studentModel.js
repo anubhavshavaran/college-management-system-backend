@@ -46,7 +46,7 @@ const studentSchema = new mongoose.Schema({
     subCaste: String,
     category: {
         type: String,
-        enum: ["general", "obc", "sc", "st"],
+        // enum: ["general", "obc", "sc", "st"],
     },
     categoryCertificateEnclosed: {
         type: String,
