@@ -1,11 +1,46 @@
-import {createOne, deleteOne, getOne, updateOne} from "./handlerFactory.js";
+import {deleteOne, getOne, updateOne} from "./handlerFactory.js";
 import Student from "../models/studentModel.js";
 import catchAsync from "../utils/CatchAsync.js";
+import AppError from "../utils/appError.js";
 
 const getStudent = getOne(Student);
-const createOneStudent = createOne(Student);
 const updateStudent = updateOne(Student);
 const deleteStudent = deleteOne(Student);
+
+const createOneStudent = catchAsync(async (req, res, next) => {
+    const {organization} = req.params;
+    const {registrationNumber, satsNumber} = req.body;
+
+    let query;
+    if (organization === 'college') {
+        query = {
+            registrationNumber
+        }
+    } else {
+        query = {
+            satsNumber
+        }
+    }
+
+    const user = await Student.findOne(query);
+
+    if (user) {
+        return res.status(500).json({
+            error: 'duplicate',
+            message: 'A student with this Registration/SATS number already exists!',
+        });
+    }
+
+    const newDoc = await Student.create({
+        ...req.body,
+        organization: organization.toUpperCase(),
+    });
+
+    res.status(201).json({
+        status: "success",
+        data: {newDoc}
+    });
+});
 
 const getStudents = catchAsync(async (req, res) => {
     const { name, ...otherQueryParams } = req.query;

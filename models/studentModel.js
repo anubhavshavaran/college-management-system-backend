@@ -69,6 +69,10 @@ const studentSchema = new mongoose.Schema({
     previousFee: {
         type: Number,
         default: 0,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date(),
     }
 });
 
