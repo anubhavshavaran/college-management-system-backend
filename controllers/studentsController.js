@@ -43,14 +43,14 @@ const createOneStudent = catchAsync(async (req, res, next) => {
 });
 
 const getStudents = catchAsync(async (req, res) => {
-    const { name, ...otherQueryParams } = req.query;
+    const {name, ...otherQueryParams} = req.query;
     const query = {
         ...otherQueryParams,
         organization: req.params.organization.toUpperCase(),
     };
 
     if (name) {
-        query.name = { $regex: name, $options: "i" };
+        query.name = {$regex: name, $options: "i"};
     }
 
     const students = await Student.find(query);
@@ -95,26 +95,68 @@ const updateStudentsFee = catchAsync(async (req, res) => {
 
 const searchStudents = catchAsync(async (req, res) => {
     const {organization, searchQuery} = req.params;
+    const {course, year} = req.query;
 
-    const query = organization === 'college' ? [
+    if (!organization || !searchQuery) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Organization and search query are required',
+        });
+    }
+    if (!['college', 'school'].includes(organization.toLowerCase())) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Invalid organization type. Must be "college" or "school"',
+        });
+    }
+
+    const query = [
         {name: {$regex: searchQuery, $options: "i"}},
-        {registrationNumber: {$regex: searchQuery, $options: "i"}}
-    ] : [
-        {name: {$regex: searchQuery, $options: "i"}},
-        {satsNumber: {$regex: searchQuery, $options: "i"}}
+        {gender: {$regex: searchQuery, $options: "i"}},
+        {phoneNumber: {$regex: searchQuery, $options: "i"}},
+        {phoneNumber2: {$regex: searchQuery, $options: "i"}},
     ];
 
+    let organizationParams;
+    if (organization === 'college') {
+        organizationParams = [
+            {course: {$regex: searchQuery, $options: "i"}},
+            {registrationNumber: {$regex: searchQuery, $options: "i"}}
+        ];
+    } else {
+        organizationParams = [
+            {class: {$regex: searchQuery, $options: "i"}},
+            {satsNumber: {$regex: searchQuery, $options: "i"}}
+        ];
+    }
+
+    query.push(...organizationParams);
+
+    const andQuery = [
+        {organization: organization.toUpperCase()},
+        {
+            $or: query
+        }
+    ];
+
+    if (course) {
+        if (organization === 'college') {
+            andQuery.push({course});
+        } else {
+            andQuery.push({class: course});
+        }
+    }
+
+    if (year) andQuery.push({year});
+
     const students = await Student.find({
-        $and: [
-            {organization: organization.toUpperCase()},
-            {
-                $or: query
-            }
-        ]
+        $and: andQuery
     });
+
 
     res.status(200).json({
         status: 'success',
+        length: students.length,
         data: {
             students
         }
