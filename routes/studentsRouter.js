@@ -3,7 +3,7 @@ import {
     createOneStudent,
     deleteStudent,
     getStudent,
-    getStudents, searchStudents,
+    getStudents, getStudentsYears, searchStudents,
     updateStudent
 } from "../controllers/studentsController.js";
 
@@ -12,6 +12,9 @@ const router = Router();
 router.route('/:organization')
     .get(getStudents)
     .post(createOneStudent);
+
+router.route('/:organization/year')
+    .get(getStudentsYears);
 
 router.route('/:organization/search/:searchQuery')
     .get(searchStudents);

@@ -163,4 +163,17 @@ const searchStudents = catchAsync(async (req, res) => {
     });
 });
 
-export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents, updateStudentsFee, searchStudents};
+const getStudentsYears = catchAsync(async (req, res) => {
+    const {organization} = req.params;
+
+    const years = await Student.find({...req.query, organization: organization}).select('expectedYearOfPassing');
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            years
+        }
+    });
+});
+
+export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents, updateStudentsFee, searchStudents, getStudentsYears};
