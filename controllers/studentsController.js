@@ -165,9 +165,7 @@ const searchStudents = catchAsync(async (req, res) => {
 
 const getStudentsYears = catchAsync(async (req, res) => {
     const {organization} = req.params;
-
-    const years = await Student.find({...req.query, organization: organization}).select('expectedYearOfPassing');
-
+    const years = await Student.find({...req.query, organization: organization.toUpperCase()}).select('expectedYearOfPassing');
     res.status(200).json({
         status: 'success',
         data: {
