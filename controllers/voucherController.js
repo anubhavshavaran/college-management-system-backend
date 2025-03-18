@@ -10,7 +10,7 @@ const deleteVoucher = deleteOne(Voucher);
 const getAllVouchers = catchAsync(async (req, res) => {
     let query = {};
 
-    const {start, end, date} = req.query;
+    const {start, end, date} = req.body;
 
     if (date && !start && !end) {
         query = {
