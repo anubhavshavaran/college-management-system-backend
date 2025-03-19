@@ -31,7 +31,7 @@ const getAllVouchers = catchAsync(async (req, res) => {
         const startPeriod = new Date(start);
         startPeriod.setUTCHours(0, 0, 0, 0);
 
-        const endPeriod = new Date(start);
+        const endPeriod = new Date(end);
         endPeriod.setUTCHours(23, 59, 59, 999);
 
         query = {
