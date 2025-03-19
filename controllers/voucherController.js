@@ -1,4 +1,4 @@
-import {createOne, deleteOne, getAll, getOne, updateOne} from "./handlerFactory.js";
+import {createOne, deleteOne, getOne, updateOne} from "./handlerFactory.js";
 import Voucher from "../models/voucherModel.js";
 import catchAsync from "../utils/CatchAsync.js";
 
@@ -13,14 +13,31 @@ const getAllVouchers = catchAsync(async (req, res) => {
     const {start, end, date} = req.body;
 
     if (date && !start && !end) {
-        query = {
-            date
-        }
-    } else if (!date && start && end) {
+        const targetDate = new Date(date);
+
+        const startOfDay = new Date(targetDate);
+        startOfDay.setUTCHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(targetDate);
+        endOfDay.setUTCHours(23, 59, 59, 999);
+
         query = {
             date: {
-                $gte: start,
-                $lte: end,
+                $gte: startOfDay,
+                $lt: endOfDay
+            }
+        };
+    } else if (!date && start && end) {
+        const startPeriod = new Date(start);
+        startPeriod.setUTCHours(0, 0, 0, 0);
+
+        const endPeriod = new Date(start);
+        endPeriod.setUTCHours(23, 59, 59, 999);
+
+        query = {
+            date: {
+                $gte: startPeriod,
+                $lte: endPeriod,
             }
         }
     }
