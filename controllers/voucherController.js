@@ -54,4 +54,47 @@ const getAllVouchers = catchAsync(async (req, res) => {
     });
 });
 
-export {getAllVouchers, getVoucher, createVoucher, updateVoucher, deleteVoucher};
+const searchVouchers = catchAsync(async (req, res) => {
+    const {organization, searchQuery} = req.params;
+
+    if (!organization || !searchQuery) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Organization and search query are required',
+        });
+    }
+
+    const query = [
+        {particulars: {$regex: searchQuery, $options: "i"}},
+        {title: {$regex: searchQuery, $options: "i"}},
+    ];
+
+    if (!isNaN(Number(searchQuery))) {
+        console.log('is number')
+        console.log(searchQuery);
+        query.push({
+            amount: Number(searchQuery),
+        });
+    }
+
+    const andQuery = [
+        {organization: organization.toUpperCase()},
+        {
+            $or: query
+        }
+    ];
+
+    const vouchers = await Voucher.find({
+        $and: andQuery
+    });
+
+    res.status(200).json({
+        status: 'success',
+        length: vouchers.length,
+        data: {
+            vouchers
+        }
+    });
+});
+
+export {getAllVouchers, getVoucher, createVoucher, updateVoucher, deleteVoucher, searchVouchers};
