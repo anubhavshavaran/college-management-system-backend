@@ -16,6 +16,9 @@ const studentSchema = new mongoose.Schema({
     durationInYear: {
         type: Number
     },
+    batch: {
+        type: String,
+    },
     year: {
         type: String
     },
