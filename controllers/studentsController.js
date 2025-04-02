@@ -174,4 +174,52 @@ const getStudentsYears = catchAsync(async (req, res) => {
     });
 });
 
-export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents, updateStudentsFee, searchStudents, getStudentsYears};
+const promoteStudents = catchAsync(async (req, res) => {
+    const {course, year} = req.query;
+    const {organization} = req.params;
+
+    if (!course || !year || !organization) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Please provide course, year and organization."',
+        });
+    }
+
+    let newYear;
+    switch (year) {
+        case 'newAdmission':
+            newYear = '1';
+            break;
+        case '1':
+            newYear = '2';
+            break;
+        case '2':
+            newYear = '3';
+            break;
+        case '3':
+            newYear = '4';
+            break;
+        case '4':
+            newYear = 'passedOut';
+            break;
+    }
+
+    await Student.updateMany({
+        $and: [
+            {
+                course,
+                year,
+                organization: organization.toUpperCase(),
+            },
+        ]
+    }, {
+        year: newYear
+    });
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Students promoted successfully.',
+    });
+});
+
+export {createOneStudent, updateStudent, getStudent, deleteStudent, getStudents, updateStudentsFee, searchStudents, getStudentsYears, promoteStudents};
