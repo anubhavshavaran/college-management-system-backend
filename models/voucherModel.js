@@ -40,7 +40,7 @@ voucherSchema.pre("save", async function (next) {
     const voucher = this;
 
     // Get the current date
-    const currentDate = new Date();
+    const currentDate = voucher.date;
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
 
