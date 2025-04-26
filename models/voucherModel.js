@@ -7,7 +7,7 @@ const voucherSchema = new mongoose.Schema({
         required: true
     },
     voucherNumber: {
-        type: String
+        type: Number
     },
     title: {
         type: String,
@@ -53,7 +53,8 @@ voucherSchema.pre("save", async function (next) {
     }).sort({ voucherNumber: -1 });
 
     if (lastVoucher) {
-        voucher.voucherNumber = (parseInt(lastVoucher.voucherNumber, 10) + 1).toString();
+        console.log(lastVoucher.voucherNumber);
+        voucher.voucherNumber = lastVoucher.voucherNumber + 1;
     } else {
         voucher.voucherNumber = "1";
     }

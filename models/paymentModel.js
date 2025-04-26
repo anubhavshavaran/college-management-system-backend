@@ -34,18 +34,19 @@ function getFinancialYearStart(date = new Date()) {
 
 paymentSchema.pre("save", async function (next) {
     try {
-        const student = await mongoose.model("Student").findById(this.studentId);
-
-        if (!student) {
-            return next(new Error("Student not found"));
-        }
+        // const student = await mongoose.model("Student").findById(this.studentId);
+        //
+        // if (!student) {
+        //     return next(new Error("Student not found"));
+        // }
 
         const financialYearStart = getFinancialYearStart();
 
         const lastPayment = await mongoose
             .model("Payment")
             .findOne({
-                studentId: { $in: await mongoose.model("Student").distinct("_id", { organization: student.organization }) },
+                // studentId: { $in: await mongoose.model("Student").distinct("_id", { organization: student.organization }) },
+                studentId: this.studentId,
                 paidOn: { $gte: financialYearStart },
             })
             .sort({ paidOn: -1, _id: -1 });

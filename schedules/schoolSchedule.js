@@ -1,11 +1,9 @@
-import schedule from "node-schedule";
+import cron from "node-cron";
 import Student from "../models/studentModel.js";
 import AcademicData from "../models/academicDataModel.js";
 
 async function promoteStudents() {
-    const students = await Student.find({
-        organization: "SCHOOL"
-    });
+    const students = await Student.find({ organization: "SCHOOL" });
 
     for (const student of students) {
         if (student.class === "passedOut") continue;
@@ -31,7 +29,6 @@ async function promoteStudents() {
         }
 
         student.paidFee = 0;
-
         await student.save();
     }
 
@@ -39,11 +36,33 @@ async function promoteStudents() {
 }
 
 async function scheduleSchoolPromotionTask() {
-    const academicYear = await AcademicData.findOne({
-        organization: "SCHOOL"
-    });
+    const academicYear = await AcademicData.findOne({ organization: "SCHOOL" });
     if (academicYear && academicYear.endingDate) {
-        schedule.scheduleJob(academicYear.endingDate, promoteStudents);
+        const endDate = new Date(academicYear.endingDate);
+        const currentDate = new Date();
+
+        console.log(`Academic year end date: ${endDate}`);
+        console.log(`Current system date: ${currentDate}`);
+
+        // If the academic year's ending date has already passed, promote students immediately
+        if (currentDate >= endDate) {
+            console.log("Academic year has ended, running immediate promotion...");
+            await promoteStudents();
+        } else {
+            // Schedule the task at midnight on the endDate
+            const day = endDate.getDate();
+            const month = endDate.getMonth() + 1; // Months are zero-based in JS
+            console.log(`Scheduling task for ${day} ${month}`);
+
+            cron.schedule(`0 0 ${day} ${month} *`, async () => {
+                console.log("Running school promotion task at midnight...");
+                await promoteStudents();
+            });
+
+            console.log("Scheduled school promotion task.");
+        }
+    } else {
+        console.error("No academic end date found for the school.");
     }
 }
 

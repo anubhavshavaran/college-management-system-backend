@@ -38,10 +38,6 @@ scheduleSchoolPromotionTask().then(_ => {
    console.log("Schedule School Promotion Task");
 });
 
-// scheduleCollegePromotionTask().then(_ => {
-//    console.log("Schedule College Promotion Task");
-// })
-
 app.all('*', (req, res, next) => {
    next(new AppError(`Can't find ${req.originalUrl} on the server.`, '404'));
 });
