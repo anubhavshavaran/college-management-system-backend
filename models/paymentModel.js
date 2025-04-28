@@ -8,7 +8,7 @@ const paymentSchema = new mongoose.Schema({
         required: true
     },
     transactionId: {
-        type: String,
+        type: Number,
     },
     amount: {
         type: Number,
@@ -27,11 +27,6 @@ const paymentSchema = new mongoose.Schema({
     }
 });
 
-function getFinancialYearStart(date = new Date()) {
-    const year = date.getMonth() < 3 ? date.getFullYear() - 1 : date.getFullYear();
-    return new Date(`${year}-04-01T00:00:00.000Z`);
-}
-
 paymentSchema.pre("save", async function (next) {
     try {
         const lastPayment = await mongoose
@@ -40,8 +35,7 @@ paymentSchema.pre("save", async function (next) {
             .sort({ paidOn: -1, _id: -1 });
 
         if (lastPayment) {
-            const lastTransactionNumber = parseInt(lastPayment.transactionId, 10) || 0;
-            this.transactionId = lastTransactionNumber + 1;
+            this.transactionId = lastPayment.transactionId + 1;
         } else {
             this.transactionId = 1;
         }

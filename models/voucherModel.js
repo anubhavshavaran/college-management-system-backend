@@ -53,7 +53,6 @@ voucherSchema.pre("save", async function (next) {
     }).sort({ voucherNumber: -1 });
 
     if (lastVoucher) {
-        console.log(lastVoucher.voucherNumber);
         voucher.voucherNumber = lastVoucher.voucherNumber + 1;
     } else {
         voucher.voucherNumber = "1";
