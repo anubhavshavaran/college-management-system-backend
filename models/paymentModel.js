@@ -29,15 +29,23 @@ const paymentSchema = new mongoose.Schema({
 
 paymentSchema.pre("save", async function (next) {
     try {
-        const lastPayment = await mongoose
-            .model("Payment")
-            .findOne({studentId: this.studentId})
-            .sort({ paidOn: -1, _id: -1 });
+        const payment = this;
+
+        const currentDate = payment.paidOn || new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+
+        const financialYearStart = new Date(`${currentMonth >= 4 ? currentYear : currentYear - 1}-04-01T00:00:00.000Z`);
+        const financialYearEnd = new Date(`${currentMonth >= 4 ? currentYear + 1 : currentYear}-03-31T23:59:59.999Z`);
+
+        const lastPayment = await mongoose.model("Payment").findOne({
+            paidOn: { $gte: financialYearStart, $lte: financialYearEnd }
+        }).sort({ transactionId: -1 });
 
         if (lastPayment) {
-            this.transactionId = lastPayment.transactionId + 1;
+            payment.transactionId = lastPayment.transactionId + 1;
         } else {
-            this.transactionId = 1;
+            payment.transactionId = 1;
         }
 
         next();
