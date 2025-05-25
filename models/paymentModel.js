@@ -32,7 +32,7 @@ const particularsSchema = new mongoose.Schema({
     other1: {type: Number},
     other2: {type: Number},
     other3: {type: Number}
-});
+}, {_id: false});
 
 const paymentSchema = new mongoose.Schema({
     studentId: {
