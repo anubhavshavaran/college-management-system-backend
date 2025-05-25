@@ -1,6 +1,39 @@
 import mongoose, {Schema} from "mongoose";
 import Student from "./studentModel.js";
 
+const particularsSchema = new mongoose.Schema({
+    tuitionFees: {type: Number},
+    labFees: {type: Number},
+    libraryFees: {type: Number},
+    pslLibraryFees: {type: Number},
+    cautionMoney: {type: Number},
+    gymkhana: {type: Number},
+    studentActivity: {type: Number},
+    medicalFees: {type: Number},
+    collegeExamFees: {type: Number},
+    studentAidFees: {type: Number},
+    identityCard: {type: Number},
+    collegeHandBookMagazine: {type: Number},
+    readingRoomFees: {type: Number},
+    courseMaterials: {type: Number},
+    courseDevelopment: {type: Number},
+    admissionFees: {type: Number},
+    ksswFund: {type: Number},
+    kstbFund: {type: Number},
+    sportsFees: {type: Number},
+    kuSportsDevelopmentFees: {type: Number},
+    kuCareerGuidanceFees: {type: Number},
+    nssFee: {type: Number},
+    registrationFees: {type: Number},
+    licFees: {type: Number},
+    cdFees: {type: Number},
+    poorStudentAidFund: {type: Number},
+    lateAdmPenalFees: {type: Number},
+    other1: {type: Number},
+    other2: {type: Number},
+    other3: {type: Number}
+});
+
 const paymentSchema = new mongoose.Schema({
     studentId: {
         type: Schema.Types.ObjectId,
@@ -24,6 +57,10 @@ const paymentSchema = new mongoose.Schema({
     },
     particulars: {
         type: String,
+    },
+    detailedParticulars: {
+       type: particularsSchema,
+       default: null
     }
 });
 
